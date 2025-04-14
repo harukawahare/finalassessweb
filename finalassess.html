@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>儿童牙科综合评估系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .nav-bar {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #e9ecef;
+            transition: all 0.3s;
+        }
+        .nav-button.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease-in-out;
+        }
+        .section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .question-group {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .option-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        input[type="radio"]:checked + .option-label {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .result-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .high-risk { background: #f8d7da; color: #721c24; }
+        .medium-risk { background: #fff3cd; color: #856404; }
+        .low-risk { background: #d4edda; color: #155724; }
+        .score { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>儿童牙科综合评估系统</h1>
+
+    <div class="nav-bar">
+        <button class="nav-button active" onclick="showSection('basic-info')">基本信息</button>
+        <button class="nav-button" onclick="showSection('caries-risk')">龋齿风险</button>
+        <button class="nav-button" onclick="showSection('dental-anxiety')">牙科焦虑</button>
+    </div>
+
+    <div id="basic-info" class="section active">
+        <div class="question-group">
+            <h3>患者基本信息</h3>
+            <div class="options-container">
+                <label>姓名：<input type="text" id="name"></label>
+                <label>年龄：<input type="number" id="age" min="0" max="18"></label>
+                <label>性别：
+                    <select id="gender">
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="caries-risk" class="section">
+        <form id="caries-form">
+            <div class="question-group">
+            <h3 class="required">1. 孩子喝的奶粉或饮用水里是否会加糖</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q1" value="high" required> 一直加糖</label>
+                <label><input type="radio" name="q1" value="high"> 经常加糖</label>
+                <label><input type="radio" name="q1" value="medium"> 有时加糖</label>
+                <label><input type="radio" name="q1" value="medium"> 偶尔加糖</label>
+                <label><input type="radio" name="q1" value="protective"> 从不加糖</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">2. 最近一个月孩子喝夜奶的次数</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q2" value="high"> 几乎每晚都喝夜奶</label>
+                <label><input type="radio" name="q2" value="high"> 经常喝夜奶</label>
+                <label><input type="radio" name="q2" value="medium"> 有时喝夜奶</label>
+                <label><input type="radio" name="q2" value="medium"> 偶尔喝夜奶</label>
+                <label><input type="radio" name="q2" value="protective"> 从不喝夜奶</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">3. 近一个月家长每天都会亲自给孩子刷牙</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q3" value="high"> 从不</label>
+                <label><input type="radio" name="q3" value="high"> 偶尔</label>
+                <label><input type="radio" name="q3" value="medium"> 有时</label>
+                <label><input type="radio" name="q3" value="protective"> 经常</label>
+                <label><input type="radio" name="q3" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">4. 早晚各刷1次牙</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q4" value="high"> 从不</label>
+                <label><input type="radio" name="q4" value="high"> 偶尔</label>
+                <label><input type="radio" name="q4" value="medium"> 有时</label>
+                <label><input type="radio" name="q4" value="protective"> 经常</label>
+                <label><input type="radio" name="q4" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">5. 每次能刷够2分钟</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q5" value="high"> 从不</label>
+                <label><input type="radio" name="q5" value="high"> 偶尔</label>
+                <label><input type="radio" name="q5" value="medium"> 有时</label>
+                <label><input type="radio" name="q5" value="protective"> 经常</label>
+                <label><input type="radio" name="q5" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">6. 刷牙时孩子配合程度好</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q6" value="high"> 从不</label>
+                <label><input type="radio" name="q6" value="high"> 偶尔</label>
+                <label><input type="radio" name="q6" value="medium"> 有时</label>
+                <label><input type="radio" name="q6" value="protective"> 经常</label>
+                <label><input type="radio" name="q6" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">7. 刷牙时使用牙膏</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q7" value="high"> 从不</label>
+                <label><input type="radio" name="q7" value="high"> 偶尔</label>
+                <label><input type="radio" name="q7" value="medium"> 有时</label>
+                <label><input type="radio" name="q7" value="protective"> 经常</label>
+                <label><input type="radio" name="q7" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">8. 家长帮孩子使用牙线</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q8" value="high"> 从不</label>
+                <label><input type="radio" name="q8" value="high"> 偶尔</label>
+                <label><input type="radio" name="q8" value="medium"> 有时</label>
+                <label><input type="radio" name="q8" value="protective"> 经常</label>
+                <label><input type="radio" name="q8" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">9. 家长在孩子用餐后，会给他喂一口清水</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q9" value="high"> 从不</label>
+                <label><input type="radio" name="q9" value="high"> 偶尔</label>
+                <label><input type="radio" name="q9" value="medium"> 有时</label>
+                <label><input type="radio" name="q9" value="protective"> 经常</label>
+                <label><input type="radio" name="q9" value="protective"> 一直</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">10. 孩子使用的牙膏是否是含氟牙膏？</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q10" value="high"> 不是</label>
+                <label><input type="radio" name="q10" value="medium"> 不知道</label>
+                <label><input type="radio" name="q10" value="protective"> 是</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">11. 孩子平均每天吃几次餐间食物</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q11" value="protective"> 0次</label>
+                <label><input type="radio" name="q11" value="medium"> 1次</label>
+                <label><input type="radio" name="q11" value="medium"> 2次</label>
+                <label><input type="radio" name="q11" value="high"> 3次</label>
+                <label><input type="radio" name="q11" value="high"> 4次</label>
+                <label><input type="radio" name="q11" value="high"> 5次</label>
+                <label><input type="radio" name="q11" value="high"> 6次及以上</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">12. 看护人有未治疗龋</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q12" value="high"> 是</label>
+                <label><input type="radio" name="q12" value="protective"> 否</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">13. 最近半年您带孩子看过牙医吗</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q13" value="protective"> 是</label>
+                <label><input type="radio" name="q13" value="high"> 否</label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3 class="required">14. 家庭年收入（人民币）</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q14" value="high"> 5万以下</label>
+                <label><input type="radio" name="q14" value="protective"> 5-10万</label>
+                <label><input type="radio" name="q14" value="protective"> 10-15万</label>
+                <label><input type="radio" name="q14" value="protective"> 15-20万</label>
+                <label><input type="radio" name="q14" value="protective"> 20万以上</label>
+                </div>
+            </div>
+            <button type="button" onclick="calculateCariesRisk()">评估风险</button>
+        </form>
+        <div id="caries-result" class="result-box"></div>
+    </div>
+
+    <div id="dental-anxiety" class="section">
+        <form id="anxiety-form">
+        <div class="question-group">
+            <h3>1. 口腔医生</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q1" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q1" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q1" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q1" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q1" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>2. 医生</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q2" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q2" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q2" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q2" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q2" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>3. 打针</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q3" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q3" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q3" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q3" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q3" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>4. 口腔医生检查口腔</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q4" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q4" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q4" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q4" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q4" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>5. 不得不张着嘴</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q5" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q5" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q5" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q5" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q5" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>6. 口腔医生会触碰你</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q6" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q6" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q6" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q6" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q6" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>7. 口腔医生会盯着你看</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q7" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q7" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q7" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q7" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q7" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>8. 口腔医生钻牙</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q8" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q8" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q8" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q8" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q8" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>9. 看见口腔医生钻牙</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q9" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q9" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q9" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q9" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q9" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>10. 口腔医生钻牙的噪音</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q10" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q10" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q10" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q10" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q10" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>11. 口腔医生将器械放入你的口内</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q11" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q11" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q11" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q11" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q11" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>12. 透不过气</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q12" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q12" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q12" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q12" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q12" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>13. 不得不去医院</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q13" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q13" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q13" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q13" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q13" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>14. 穿白大褂的人</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q14" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q14" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q14" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q14" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q14" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <h3>15. 口腔护士清洁你的牙齿</h3>
+            <div class="options-container">
+                <label><input type="radio" name="q15" value="1" required><span class="option-label">一点也不害怕<br><span class="score">1分</span></span></label>
+                <label><input type="radio" name="q15" value="2"><span class="option-label">有一点害怕<br><span class="score">2分</span></span></label>
+                <label><input type="radio" name="q15" value="3"><span class="option-label">比较害怕<br><span class="score">3分</span></span></label>
+                <label><input type="radio" name="q15" value="4"><span class="option-label">相当害怕<br><span class="score">4分</span></span></label>
+                <label><input type="radio" name="q15" value="5"><span class="option-label">非常害怕<br><span class="score">5分</span></span></label>
+                </div>
+            </div>
+            <button type="button" onclick="calculateAnxiety()">提交评估</button>
+        </form>
+        <div id="anxiety-result" class="result-box"></div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function calculateAnxiety() {
+            const answers = document.querySelectorAll('#anxiety-form input:checked');
+            if(answers.length !== 15) {
+                alert('请完成所有15个问题的评估！');
+                return;
+            }
+
+            const total = Array.from(answers).reduce((sum, el) => sum + parseInt(el.value), 0);
+            const resultDiv = document.getElementById('anxiety-result');
+            
+            let resultText = `总得分：${total}分<br>`;
+            if(total >= 37) {
+                resultText += "存在牙科焦虑症，建议专业干预";
+                resultDiv.className = "result-box high-risk";
+            } else {
+                resultText += "无显著焦虑症状，建议定期检查";
+                resultDiv.className = "result-box low-risk";
+            }
+
+            resultDiv.innerHTML = resultText;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateCariesRisk() {
+            let riskLevels = { high: 0, medium: 0, protective: 0 };
+
+            for(let i = 1; i <= 14; i++) {
+                const answer = document.querySelector(`input[name="q${i}"]:checked`);
+                if(!answer) {
+                    alert("请完成所有必填问题！");
+                    return;
+                }
+                riskLevels[answer.value]++;
+            }
+
+            const resultDiv = document.getElementById('caries-result');
+            let resultText = '';
+            if(riskLevels.high > 0) {
+                resultText = `🟥 高风险（${riskLevels.high}项高风险）<br>建议：立即就诊并改善口腔护理`;
+            } else if(riskLevels.medium > 0) {
+                resultText = `🟨 中风险（${riskLevels.medium}项中风险）<br>建议：加强日常护理并定期检查`;
+            } else {
+                resultText = "🟩 低风险<br>建议：继续保持良好习惯";
+            }
+            
+            resultDiv.innerHTML = resultText;
+            resultDiv.className = riskLevels.high > 0 ? 'high-risk' : 
+                                 riskLevels.medium > 0 ? 'medium-risk' : 'low-risk';
+            resultDiv.style.display = 'block';
+        }
+
+        const assessmentData = {
+            basicInfo: {},
+            cariesRisk: {},
+            dentalAnxiety: {}
+        };
+        
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('change', function() {
+                const section = this.closest('.section').id;
+                const field = this.name || this.id;
+                assessmentData[section][field] = this.value;
+            });
+        });
+    </script>
+</body>
+</html>
